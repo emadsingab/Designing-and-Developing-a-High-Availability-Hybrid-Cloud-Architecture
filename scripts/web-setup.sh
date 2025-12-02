@@ -104,67 +104,229 @@ cat > index.html << 'EMD'
     <title>نظام إدارة الموظفين</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
     <style>
-        /* إعادة تعريف الألوان الأصلية */
+
         :root {
             --primary-dark-blue: #2c3e50; 
-            --primary-teal: #1abc9c;   
-            --accent-blue: #3498db;     
+            --primary-teal: #1abc9c;   
+            --accent-blue: #3498db;     
             --background-light: #ecf0f1;
             --card-background: #ffffff; 
-            --text-dark: #333333;      
-            --border-color: #e0e0e0;   
+            --text-dark: #333333;      
+            --text-muted: #7f8c8d;     
+            --border-color: #e0e0e0;   
             --table-header-bg: #f2f4f6;
+            --table-hover-bg: #eaf2f8;  
+
+            /* ألوان التنبيهات */
+            --success-bg: #d4edda;
+            --success-color: #155724;
+            --danger-bg: #f8d7da;
+            --danger-color: #721c24;
+            --info-bg: #d1ecf1;
+            --info-color: #0c5460;
         }
 
-        body { background-color: var(--background-light); color: var(--text-dark); }
-        .navbar { background-color: var(--primary-dark-blue); box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
-        .navbar .navbar-brand { font-weight: 700; font-size: 1.5rem; }
-        .container { max-width: 1100px; margin-top: 40px; margin-bottom: 40px; }
-        
-        .card { 
-            border-radius: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none;
-        }
-        
-        /* تنسيق جدول الموظفين */
-        .table-custom thead th { 
-            background-color: var(--table-header-bg); font-weight: 600;
-        }
-        .table-custom tbody tr:hover { 
-            background-color: #eaf2f8; cursor: pointer;
+        body {
+            background-color: var(--background-light);
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-dark);
+            line-height: 1.6;
         }
 
-        /* تنسيق زر الإضافة */
-        .btn-primary-custom {
-            background-color: var(--primary-teal); border-color: var(--primary-teal); color: white;
-            font-weight: 600; border-radius: 0.5rem; transition: background-color 0.3s;
+        .navbar {
+            background-color: var(--primary-dark-blue); 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            padding-top: 1rem;
+            padding-bottom: 1rem;
         }
-        .btn-primary-custom:hover {
-            background-color: #16a085; border-color: #16a085; color: white;
+        .navbar .navbar-brand {
+            color: var(--card-background) !important;
+            font-weight: 700; /* خط سميك */
+            font-size: 1.5rem;
         }
 
-        /* بطاقة الإحصائيات */
+        .container {
+            max-width: 1100px; /* زيادة عرض الحاوية */
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 1rem; /* حواف مستديرة أكثر */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* ظل أقوى وأكثر انتشاراً */
+            border: none;
+            overflow: hidden; /* لضمان أن الحواف المستديرة تعمل مع المحتوى */
+        }
+
+        .table {
+            margin-bottom: 0; /* إزالة الهامش السفلي للجدول داخل البطاقة */
+        }
+        .table-hover tbody tr:hover {
+            background-color: var(--table-hover-bg);
+            cursor: pointer;
+        }
+        th {
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: var(--table-header-bg);
+            border-bottom: 2px solid var(--border-color);
+        }
+        td {
+            padding: 1rem 0.75rem; /* تباعد أكبر للخلايا */
+        }
+
+        /* ألوان الأزرار */
+        .btn-primary {
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #16a085; /* درجة أغمق */
+            border-color: #16a085;
+        }
+        .btn-info { /* زر التعديل */
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+            border-radius: 0.5rem;
+        }
+        .btn-info:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        .btn-danger {
+            background-color: #e74c3c; /* أحمر للحذف */
+            border-color: #e74c3c;
+            border-radius: 0.5rem;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+        .btn-success { /* زر حفظ التعديلات */
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+            font-weight: 600;
+            border-radius: 0.5rem;
+        }
+        .btn-success:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+        }
+
+        /* تنسيقات التنبيهات المخصصة */
+        .custom-alert {
+            position: fixed;
+            top: 25px; /* أعلى قليلاً */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1060;
+            padding: 18px 25px; /* تباعد أكبر */
+            border-radius: 0.75rem; /* حواف مستديرة أكثر */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            max-width: 450px; /* عرض أكبر قليلاً */
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+        .custom-alert.alert-success { background-color: var(--success-bg); color: var(--success-color); border: 1px solid #a3e0b2; }
+        .custom-alert.alert-danger { background-color: var(--danger-bg); color: var(--danger-color); border: 1px solid #f2b1b1; }
+        .custom-alert.alert-info { background-color: var(--info-bg); color: var(--info-color); border: 1px solid #a7d9e7; }
+
+        /* تنسيقات الـ Modals */
+        .modal-content {
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: none;
+        }
+        .modal-header {
+            background-color: var(--primary-dark-blue);
+            color: white;
+            border-bottom: none;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            padding: 1.5rem;
+        }
+        .modal-header .btn-close {
+            filter: invert(1); /* لجعل زر الإغلاق أبيض */
+        }
+        .modal-title {
+            font-weight: 600;
+        }
+        .modal-body {
+            padding: 2rem;
+        }
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            justify-content: center;
+        }
+        .custom-confirm-modal .modal-footer button {
+            width: 120px; /* عرض متناسق للأزرار */
+            font-weight: 500;
+        }
+
+        /* تنسيقات بطاقات الإحصائيات */
         .stats-card {
-            background-color: var(--card-background); border: 1px solid var(--border-color);
-            padding: 20px; text-align: center; border-radius: 1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            text-align: center;
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 100%; /* لضمان نفس الارتفاع */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .stats-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
         }
         .stats-card h4 {
-            color: var(--primary-teal); font-size: 2rem; font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 8px;
+            font-size: 2.2rem;
+            font-weight: 700;
         }
-        
-        /* التنبيهات المنبثقة */
-        .custom-alert {
-            position: fixed; top: 25px; left: 50%; transform: translateX(-50%); z-index: 1060;
-            padding: 15px 25px; border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: none; max-width: 450px; text-align: center; font-weight: 500;
+        .stats-card h4 i {
+            color: var(--accent-blue); /* لون الأيقونات في البطاقات */
+        }
+        .stats-card p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+        }
+        .form-control:focus {
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 0.25rem rgba(26, 188, 156, 0.25); /* ظل تركيز بلون Primary Teal */
         }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-users me-2"></i>نظام إدارة الموظفين</a>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-users me-2"></i>نظام إدارة الموظفين
+            </a>
         </div>
     </nav>
 
@@ -172,27 +334,28 @@ cat > index.html << 'EMD'
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="h2" style="color: var(--primary-dark-blue); font-weight: 700;">قائمة الموظفين</h1>
-                <p id="server-hostname" class="text-muted small">جاري التحميل...</p>
+                <p id="server-hostname" class="text-muted">جاري التحميل...</p>
             </div>
-            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
                 <i class="fas fa-plus me-2"></i>إضافة موظف جديد
             </button>
         </div>
 
         <div class="row mb-5">
-            <div class="col-md-12"> 
+            <div class="col-md-12"> <!-- تم تعديل هذا العمود ليشغل العرض الكامل -->
                 <div class="stats-card">
                     <h4><span id="total-employees">0</span></h4>
-                    <p class="text-muted">إجمالي الموظفين</p>
+                    <p>إجمالي الموظفين</p>
                 </div>
             </div>
+            <!-- تم حذف جزئي "متوسط الرواتب" و "أداء الموظفين" -->
         </div>
 
-        <div class="card shadow-lg">
+        <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-custom table-hover align-middle mb-0">
-                        <thead>
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
                             <tr>
                                 <th>الاسم</th>
                                 <th>رقم الهاتف</th>
@@ -209,61 +372,90 @@ cat > index.html << 'EMD'
         </div>
     </div>
 
-    <div class="modal fade" id="addEmployeeModal" tabindex="-1">
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">إضافة موظف جديد</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEmployeeModalLabel">إضافة موظف جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="add-employee-form">
-                        <div class="mb-3"><input type="text" class="form-control" id="add-name" placeholder="الاسم" required></div>
-                        <div class="mb-3"><input type="text" class="form-control" id="add-phone" placeholder="رقم الهاتف"></div>
-                        <div class="mb-3"><input type="email" class="form-control" id="add-email" placeholder="البريد الإلكتروني"></div>
-                        <div class="mb-3"><input type="text" class="form-control" id="add-position" placeholder="الوظيفة"></div>
-                        <div class="mb-3"><input type="number" class="form-control" id="add-salary" placeholder="الراتب"></div>
-                        <button type="submit" class="btn btn-success w-100"><i class="fas fa-save me-2"></i>إضافة</button>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="add-name" placeholder="الاسم" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="add-phone" placeholder="رقم الهاتف">
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" id="add-email" placeholder="البريد الإلكتروني">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="add-position" placeholder="الوظيفة">
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" class="form-control" id="add-salary" placeholder="الراتب">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save me-2"></i>إضافة</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="editEmployeeModal" tabindex="-1">
+    <!-- Edit Employee Modal -->
+    <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">تعديل بيانات الموظف</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmployeeModalLabel">تعديل بيانات الموظف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-employee-form">
                         <input type="hidden" id="edit-id">
-                        <div class="mb-3"><input type="text" class="form-control" id="edit-name" required placeholder="الاسم"></div>
-                        <div class="mb-3"><input type="text" class="form-control" id="edit-phone" placeholder="رقم الهاتف"></div>
-                        <div class="mb-3"><input type="email" class="form-control" id="edit-email" placeholder="البريد الإلكتروني"></div>
-                        <div class="mb-3"><input type="text" class="form-control" id="edit-position" placeholder="الوظيفة"></div>
-                        <div class="mb-3"><input type="number" class="form-control" id="edit-salary" placeholder="الراتب"></div>
-                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-check-circle me-2"></i>حفظ التعديلات</button>
+                        <div class="mb-3">
+                            <label for="edit-name" class="form-label visually-hidden">الاسم</label>
+                            <input type="text" class="form-control" id="edit-name" required placeholder="الاسم">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-phone" class="form-label visually-hidden">رقم الهاتف</label>
+                            <input type="text" class="form-control" id="edit-phone" placeholder="رقم الهاتف">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-email" class="form-label visually-hidden">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" id="edit-email" placeholder="البريد الإلكتروني">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-position" class="form-label visually-hidden">الوظيفة</label>
+                            <input type="text" class="form-control" id="edit-position" placeholder="الوظيفة">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-salary" class="form-label visually-hidden">الراتب</label>
+                            <input type="number" class="form-control" id="edit-salary" placeholder="الراتب">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100"><i class="fas fa-check-circle me-2"></i>حفظ التعديلات</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="custom-alert-message" class="custom-alert alert" role="alert"></div>
+    <!-- Custom Alert/Notification Message -->
+    <div id="custom-alert-message" class="custom-alert" role="alert"></div>
 
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <!-- Custom Confirm Modal for Delete -->
+    <div class="modal fade custom-confirm-modal" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">تأكيد الحذف</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">تأكيد الحذف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <i class="fas fa-exclamation-triangle text-danger mb-3 fa-2x"></i><br>
-                    هل أنت متأكد من رغبتك في حذف هذا الموظف؟
+                    <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 2.5rem; color: #e74c3c;"></i><br>
+                    هل أنت متأكد من رغبتك في حذف هذا الموظف؟<br>لا يمكن التراجع عن هذا الإجراء.
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -280,37 +472,37 @@ cat > index.html << 'EMD'
             const baseUrl = window.location.protocol + '//' + window.location.host;
             const apiUrl = `${baseUrl}/api/employees`;
 
-            // دالة الإشعارات (استخدام فئات Bootstrap لتحديد الألوان)
             function showAlert(message, type = 'info', duration = 3000) {
                 const alertBox = $('#custom-alert-message');
-                // يتم تعيين ألوان التنبيهات من فئات Bootstrap: success, danger, info
-                alertBox.removeClass().addClass(`custom-alert alert alert-${type}`);
+                alertBox.removeClass('alert-success alert-danger alert-info').addClass(`alert-${type}`);
                 alertBox.text(message).fadeIn();
                 setTimeout(() => {
                     alertBox.fadeOut();
                 }, duration);
             }
 
-            // جلب اسم الخادم
             $.ajax({
-                url: `${baseUrl}/hostname`, type: 'GET',
+                url: `${baseUrl}/hostname`,
+                type: 'GET',
                 success: function(data) {
-                    $('#server-hostname').text('الخادم: ' + (data.hostname || 'Local Server'));
+                    const hostname = data.hostname || 'Local Server';
+                    $('#server-hostname').text('الخادم: ' + hostname);
                 },
-                error: function() {
-                    $('#server-hostname').text('الخادم: غير معروف');
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error fetching hostname:", textStatus, errorThrown);
+                    $('#server-hostname').text('الخادم: غير معروف'); // Fallback
+                    showAlert("فشل في جلب اسم الخادم.", "danger");
                 }
             });
 
-            // جلب وعرض بيانات الموظفين (باقي وظائف JavaScript لم تتغير)
             function fetchEmployees() {
                 $.get(apiUrl)
                 .done(function(data) {
                     $('#employee-list').empty();
-                    $('#total-employees').text(data.length); 
+                    $('#total-employees').text(data.length); // تحديث إجمالي الموظفين
 
                     if (data.length === 0) {
-                        $('#employee-list').append('<tr><td colspan="6" class="text-center py-4 text-muted">لا توجد بيانات موظفين حاليًا.</td></tr>');
+                        $('#employee-list').append('<tr><td colspan="6" class="text-center py-4">لا توجد بيانات موظفين حاليًا.</td></tr>');
                     } else {
                         data.forEach(emp => {
                             $('#employee-list').append(`
@@ -321,7 +513,7 @@ cat > index.html << 'EMD'
                                     <td>${emp.position || '-'}</td>
                                     <td>${emp.salary || '-'}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-info edit-btn me-1" data-id="${emp.id}" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" title="تعديل"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-info edit-btn me-2" data-id="${emp.id}" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" title="تعديل"><i class="fas fa-edit"></i></button>
                                         <button class="btn btn-sm btn-danger delete-btn" data-id="${emp.id}" title="حذف"><i class="fas fa-trash-alt"></i></button>
                                     </td>
                                 </tr>
@@ -329,30 +521,39 @@ cat > index.html << 'EMD'
                         });
                     }
                 })
-                .fail(function() {
-                    showAlert("فشل في جلب بيانات الموظفين. تحقق من الاتصال.", "danger");
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error fetching employees:", textStatus, errorThrown);
+                    showAlert("فشل في جلب بيانات الموظفين. الرجاء التحقق من اتصال الخادم.", "danger");
                 });
             }
 
-            // منطق إضافة موظف جديد (لم يتغير)
             $('#add-employee-form').submit(function(e) {
                 e.preventDefault();
-                const newEmployee = { name: $('#add-name').val(), phone: $('#add-phone').val(), email: $('#add-email').val(), position: $('#add-position').val(), salary: $('#add-salary').val() };
+                const newEmployee = {
+                    name: $('#add-name').val(),
+                    phone: $('#add-phone').val(),
+                    email: $('#add-email').val(),
+                    position: $('#add-position').val(),
+                    salary: $('#add-salary').val()
+                };
                 $.ajax({
-                    url: apiUrl, type: 'POST', contentType: 'application/json', data: JSON.stringify(newEmployee),
+                    url: apiUrl,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(newEmployee),
                     success: function() {
                         fetchEmployees();
                         $('#addEmployeeModal').modal('hide');
                         $('#add-employee-form')[0].reset();
                         showAlert("تمت إضافة الموظف بنجاح.", "success");
                     },
-                    error: function() {
-                        showAlert("فشل في إضافة الموظف.", "danger");
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error adding employee:", textStatus, errorThrown);
+                        showAlert("فشل في إضافة الموظف. الرجاء التحقق من اتصال الخادم والبيانات المدخلة.", "danger");
                     }
                 });
             });
 
-            // منطق الحذف والتعديل (لم يتغير)
             let employeeToDeleteId = null;
             $('#employee-list').on('click', '.delete-btn', function() {
                 employeeToDeleteId = $(this).data('id');
@@ -364,14 +565,16 @@ cat > index.html << 'EMD'
                 const id = employeeToDeleteId;
                 if (id) {
                     $.ajax({
-                        url: `${apiUrl}/${id}`, type: 'DELETE',
+                        url: `${apiUrl}/${id}`,
+                        type: 'DELETE',
                         success: function() {
                             fetchEmployees();
                             showAlert("تم حذف الموظف بنجاح.", "success");
                             $('#confirmDeleteModal').modal('hide');
                         },
-                        error: function() {
-                            showAlert("فشل في حذف الموظف.", "danger");
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error("Error deleting employee:", textStatus, errorThrown);
+                            showAlert("فشل في حذف الموظف. الرجاء التحقق من اتصال الخادم.", "danger");
                             $('#confirmDeleteModal').modal('hide');
                         }
                     });
@@ -392,16 +595,26 @@ cat > index.html << 'EMD'
             $('#edit-employee-form').submit(function(e){
                 e.preventDefault();
                 const id = $('#edit-id').val();
-                const updatedEmployee = { name: $('#edit-name').val(), phone: $('#edit-phone').val(), email: $('#edit-email').val(), position: $('#edit-position').val(), salary: $('#edit-salary').val() };
+                const updatedEmployee = {
+                    name: $('#edit-name').val(),
+                    phone: $('#edit-phone').val(),
+                    email: $('#edit-email').val(),
+                    position: $('#edit-position').val(),
+                    salary: $('#edit-salary').val()
+                };
                 $.ajax({
-                    url: `${apiUrl}/${id}`, type: 'PUT', contentType: 'application/json', data: JSON.stringify(updatedEmployee),
+                    url: `${apiUrl}/${id}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updatedEmployee),
                     success: function() {
                         fetchEmployees();
                         $('#editEmployeeModal').modal('hide');
                         showAlert("تم تحديث بيانات الموظف بنجاح.", "success");
                     },
-                    error: function() {
-                        showAlert("فشل في تحديث بيانات الموظف.", "danger");
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error updating employee:", textStatus, errorThrown);
+                        showAlert("فشل في تحديث بيانات الموظف. الرجاء التحقق من اتصال الخادم والبيانات المدخلة.", "danger");
                     }
                 });
             });
@@ -460,5 +673,6 @@ sudo firewall-cmd --reload
 # =================================================================
 echo "--> Verifying gunicorn port listening:"
 sudo ss -tnlp | grep 5000  && echo " gunicorn is listening on port 5000"
+
 
 echo "--- Web Server ($(hostname)) Provisioning Complete ✓ ---"
