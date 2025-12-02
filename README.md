@@ -97,7 +97,3 @@ The project aims to showcase:
 
 **Emad Singab** – Graduation Project, Mansoura University, Faculty of Engineering, Communication & Electronics Specialization
 
-```
-
-ممكن أعمل لك كمان نسخة **مختصرة للـ GitHub + LinkedIn** تكون جذابة بصريًا مع **badges** عشان الريبو يبقى portfolio جاهز للعرض. تحب أعملها لك؟
-```
