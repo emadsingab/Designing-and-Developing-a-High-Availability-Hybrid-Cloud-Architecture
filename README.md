@@ -64,6 +64,102 @@ The project aims to showcase:
    ```bash
    vagrant ssh <machine-name>
    ```
+   Here is a clean, professional **English version** of the README section — formatted exactly for GitHub and suitable for production-level documentation.
+
+---
+
+# ⚙️ Local Environment Setup & Troubleshooting
+
+These steps are required to run the project locally without issues related to **DNS resolution** or **HTTPS certificate validation** during Frontend ⇆ Backend testing.
+
+---
+
+## ✅ 1. Configure Local DNS
+
+The project relies on a **local DNS server** inside the network (e.g., `192.168.100.30`) to resolve internal service names.
+Correct DNS configuration ensures proper communication between the frontend, backend, and other components.
+
+### **Steps to configure DNS on Windows:**
+
+1. Open **Command Prompt** and run:
+
+   ```bash
+   ipconfig
+   ```
+
+   Identify your active **Ethernet Adapter** and check:
+
+   * IPv4 Address 192.168.100.0/24
+   * Subnet Mask
+   * Default Gateway
+
+2. Open:
+
+   ```
+   Control Panel → Network and Internet → Network and Sharing Center
+   ```
+
+3. Click:
+
+   ```
+   Change adapter settings
+   ```
+
+4. Right-click **Ethernet** → select **Properties**
+
+5. Select:
+
+   ```
+   Internet Protocol Version 4 (TCP/IPv4)
+   ```
+
+   then click **Properties**.
+
+6. Click **Advanced…**
+
+7. Go to the **DNS** tab.
+
+8. Remove any existing DNS servers and add the local DNS:
+
+   ```
+   192.168.100.30
+   ```
+
+9. Save all changes by clicking **OK**.
+
+---
+
+## ✅ 2. Run Chrome Without Certificate Validation (Local Testing Only)
+
+Since the local environment uses a **self-signed HTTPS certificate**, Chrome may block the site.
+For local development only, you can launch Chrome with certificate verification disabled.
+
+### **Steps:**
+
+1. Press:
+
+   ```
+   Win + R
+   ```
+
+2. Run the following command:
+
+   ```
+   chrome.exe --ignore-certificate-errors --user-data-dir=%LOCALAPPDATA%\Google\Chrome\User Data\Default_Test_Profile
+   ```
+
+> This launches Chrome with a separate test profile that ignores HTTPS certificate validation for local testing.
+
+---
+
+##  Summary
+
+| Task                                | Purpose                                                  |
+| ----------------------------------- | -------------------------------------------------------- |
+| Configure Local DNS                 | Allow local hostname resolution through internal DNS     |
+| Ignore Certificate Errors in Chrome | Enable local HTTPS testing with self-signed certificates |
+
+---
 
 ## 📂 Project Structure
 
