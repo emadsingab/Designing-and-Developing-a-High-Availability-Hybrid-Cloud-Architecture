@@ -49,6 +49,8 @@ The project aims to showcase:
    ```bash
    vagrant up
    ```
+   💡 Small Tip:
+After running vagrant up, the provisioning process takes around 30 minutes, so feel free to take a break, grab a coffee, and come back once everything is ready ☕😉
 
 3. **Access your web application**
 
